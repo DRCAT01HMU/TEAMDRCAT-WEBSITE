@@ -153,13 +153,20 @@
                 ctx.textBaseline = 'middle';
                 
                 let lines = [node.name];
-                if (node.group === 2 && node.name.length > 30) {
-                    const mid = Math.floor(node.name.length / 2);
-                    let spaceIdx = node.name.lastIndexOf(' ', mid + 8);
-                    if (spaceIdx === -1 || spaceIdx < mid - 15) spaceIdx = node.name.indexOf(' ', mid);
-                    if (spaceIdx !== -1) {
-                        lines = [node.name.substring(0, spaceIdx), node.name.substring(spaceIdx + 1)];
+                if (node.group === 2 && node.name.length > 20) {
+                    const words = node.name.split(' ');
+                    const charsPerLine = Math.ceil(node.name.length / 3);
+                    lines = [];
+                    let currentLine = "";
+                    for (let word of words) {
+                        if ((currentLine + word).length > charsPerLine + 2 && currentLine.length > 0) {
+                            lines.push(currentLine.trim());
+                            currentLine = word + " ";
+                        } else {
+                            currentLine += word + " ";
+                        }
                     }
+                    if (currentLine.trim()) lines.push(currentLine.trim());
                 }
 
                 const labelY = node.y + size + fontSize;
