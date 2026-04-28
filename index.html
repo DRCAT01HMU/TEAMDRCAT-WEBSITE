@@ -152,15 +152,32 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
+                let lines = [node.name];
+                if (node.group === 2 && node.name.length > 30) {
+                    const mid = Math.floor(node.name.length / 2);
+                    let spaceIdx = node.name.lastIndexOf(' ', mid + 8);
+                    if (spaceIdx === -1 || spaceIdx < mid - 15) spaceIdx = node.name.indexOf(' ', mid);
+                    if (spaceIdx !== -1) {
+                        lines = [node.name.substring(0, spaceIdx), node.name.substring(spaceIdx + 1)];
+                    }
+                }
+
                 const labelY = node.y + size + fontSize;
+                const lineHeight = fontSize * 1.3;
 
                 if (hoverNode === node) {
-                    const textWidth = ctx.measureText(node.name).width;
-                    const bWidth = textWidth + 8/globalScale;
-                    const bHeight = fontSize + 4/globalScale;
+                    let maxWidth = 0;
+                    lines.forEach(l => {
+                        const w = ctx.measureText(l).width;
+                        if (w > maxWidth) maxWidth = w;
+                    });
+                    
+                    const bWidth = maxWidth + 12/globalScale;
+                    const bHeight = (lines.length > 1 ? (lines.length - 1) * lineHeight : 0) + fontSize + 8/globalScale;
+                    const bY = labelY - fontSize/2 - 4/globalScale;
                     
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                    ctx.fillRect(node.x - bWidth/2, labelY - bHeight/2, bWidth, bHeight);
+                    ctx.fillRect(node.x - bWidth/2, bY, bWidth, bHeight);
                     ctx.fillStyle = '#000000'; 
                 } else if (highlightNodes.has(node)) {
                     ctx.fillStyle = '#ffffff';
@@ -168,8 +185,9 @@
                     ctx.fillStyle = node.group === 0 ? '#f8fafc' : (node.group === 1 ? '#cbd5e1' : '#94a3b8');
                 }
                 
-                // For long descriptions, let's just draw it. It's only 1 string per subject.
-                ctx.fillText(node.name, node.x, labelY);
+                lines.forEach((line, i) => {
+                    ctx.fillText(line, node.x, labelY + (i * lineHeight));
+                });
             })
             .onNodeHover(node => {
                 if ((!node && !highlightNodes.size) || (node && hoverNode === node)) return;
