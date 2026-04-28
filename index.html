@@ -236,6 +236,9 @@
                 } else {
                     hidePanel();
                 }
+            })
+            .onBackgroundClick(() => {
+                resetView();
             });
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
