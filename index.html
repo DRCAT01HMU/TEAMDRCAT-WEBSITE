@@ -88,7 +88,7 @@
             </div>
             <p id="panelSubject" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 md:mb-1.5">CHUYÊN NGÀNH</p>
             <h3 id="panelTitle" class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3 leading-tight font-['Outfit']">Tiêu đề bài học</h3>
-            <p class="text-slate-500 text-xs mb-4 md:mb-5 leading-relaxed">Mở giao diện học tập lâm sàng cho chuyên đề này.</p>
+            <p id="panelDesc" class="text-slate-500 text-xs mb-4 md:mb-5 leading-relaxed">Mở giao diện học tập lâm sàng cho chuyên đề này.</p>
             
             <button id="panelBtn" class="w-full py-3 bg-slate-200 hover:bg-white text-slate-900 rounded-lg font-bold text-sm transition-all flex justify-center items-center gap-2 group active:scale-95">
                 Mở Bài Học <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
@@ -143,13 +143,12 @@
                 ctx.fill();
 
                 if (highlightNodes.size > 0 && !highlightNodes.has(node)) return; 
-                if (node.group === 2 && !highlightNodes.has(node) && hoverNode !== node) return;
                 
-                let baseFontSize = node.group === 0 ? 14 : (node.group === 1 ? 12 : 9);
+                let baseFontSize = node.group === 0 ? 14 : (node.group === 1 ? 12 : 8); // Slightly smaller for desc
                 if (isMobile) baseFontSize *= 0.85;
                 const fontSize = baseFontSize / globalScale;
                 
-                ctx.font = `${node.group === 0 ? 'bold ' : ''}${fontSize}px "Plus Jakarta Sans", sans-serif`;
+                ctx.font = `${node.group === 0 ? 'bold ' : ''}${node.group === 2 ? 'italic ' : ''}${fontSize}px "Plus Jakarta Sans", sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
@@ -166,9 +165,10 @@
                 } else if (highlightNodes.has(node)) {
                     ctx.fillStyle = '#ffffff';
                 } else {
-                    ctx.fillStyle = node.group === 0 ? '#f8fafc' : '#cbd5e1';
+                    ctx.fillStyle = node.group === 0 ? '#f8fafc' : (node.group === 1 ? '#cbd5e1' : '#94a3b8');
                 }
                 
+                // For long descriptions, let's just draw it. It's only 1 string per subject.
                 ctx.fillText(node.name, node.x, labelY);
             })
             .onNodeHover(node => {
@@ -203,8 +203,11 @@
                 Graph.centerAt(node.x, node.y, 1000);
                 Graph.zoom(node.group === 0 ? (isMobile ? 1 : 1.5) : (isMobile ? 1.5 : 2.5), 1000);
 
-                if(node.group === 1 && node.url) {
-                    showPanel(node);
+                if((node.group === 1 || node.group === 2) && node.url) {
+                    // Mở panel cho cả Môn học và Giới thiệu
+                    // Tìm môn học tương ứng nếu click vào giới thiệu
+                    let targetNode = node.group === 1 ? node : graphData.nodes.find(n => n.id === node.id.replace('desc_', ''));
+                    if(targetNode) showPanel(targetNode);
                 } else {
                     hidePanel();
                 }
@@ -216,12 +219,12 @@
                 resetView();
                 return;
             }
-            const targetNode = graphData.nodes.find(n => n.name.toLowerCase().includes(val));
+            const targetNode = graphData.nodes.find(n => n.name.toLowerCase().includes(val) && n.group === 1); // Chỉ search môn
             if(targetNode) {
                 const isMobile = window.innerWidth < 768;
                 Graph.centerAt(targetNode.x, targetNode.y, 1000);
                 Graph.zoom(isMobile ? 1.5 : 2.5, 1000);
-                if(targetNode.group === 1) showPanel(targetNode);
+                showPanel(targetNode);
                 
                 highlightNodes.clear();
                 highlightLinks.clear();
@@ -233,6 +236,7 @@
         const panel = document.getElementById('infoPanel');
         const pTitle = document.getElementById('panelTitle');
         const pSubj = document.getElementById('panelSubject');
+        const pDesc = document.getElementById('panelDesc');
         const pBtn = document.getElementById('panelBtn');
         const pIcon = document.getElementById('panelIcon');
         
@@ -240,6 +244,7 @@
 
         function showPanel(node) {
             pTitle.innerText = node.name;
+            pDesc.innerText = node.description || "Mở giao diện học tập lâm sàng cho chuyên đề này.";
             currentUrl = node.url;
             
             if(node.name === 'Nội Khoa') { pIcon.className = "fas fa-stethoscope"; }
@@ -275,11 +280,11 @@
             Graph.nodeColor(Graph.nodeColor()).linkColor(Graph.linkColor());
         }
 
-        Graph.d3Force('charge').strength(window.innerWidth < 768 ? -250 : -400); 
+        Graph.d3Force('charge').strength(window.innerWidth < 768 ? -400 : -600); 
         Graph.d3Force('link').distance(link => {
-            const baseDist = window.innerWidth < 768 ? 120 : 180;
+            const baseDist = window.innerWidth < 768 ? 140 : 200;
             if (link.source.group === 0) return baseDist;
-            return baseDist / 3;
+            return baseDist * 0.8; // Distance for description node
         });
 
         setTimeout(() => {
@@ -289,11 +294,11 @@
         window.addEventListener('resize', () => {
             Graph.width(window.innerWidth).height(window.innerHeight);
             // Re-adjust physics on resize if crossing breakpoint
-            Graph.d3Force('charge').strength(window.innerWidth < 768 ? -250 : -400); 
+            Graph.d3Force('charge').strength(window.innerWidth < 768 ? -400 : -600); 
             Graph.d3Force('link').distance(link => {
-                const baseDist = window.innerWidth < 768 ? 120 : 180;
+                const baseDist = window.innerWidth < 768 ? 140 : 200;
                 if (link.source.group === 0) return baseDist;
-                return baseDist / 3;
+                return baseDist * 0.8;
             });
         });
     </script>
