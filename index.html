@@ -309,7 +309,33 @@
         Graph.d3Force('link').distance(link => {
             const baseDist = window.innerWidth < 768 ? 140 : 200;
             if (link.source.group === 0) return baseDist;
-            return baseDist * 0.8; // Distance for description node
+            return baseDist * 0.8;
+        });
+        
+        // Add "Living Network" continuous physics
+        Graph.d3AlphaDecay(0); // Prevent simulation from freezing
+        Graph.d3VelocityDecay(0.15); // Add friction for smooth movement
+        Graph.d3Force('orbit', () => {
+            const time = Date.now() / 1000;
+            graphData.nodes.forEach((node, i) => {
+                if (node.group === 0) {
+                    // Pin root strictly to center
+                    node.fx = 0; 
+                    node.fy = 0;
+                } else {
+                    // Calculate distance from center
+                    const dist = Math.sqrt(node.x * node.x + node.y * node.y) || 1;
+                    
+                    // Slow counter-clockwise orbit
+                    const orbitSpeed = node.group === 1 ? 0.08 : 0.12;
+                    node.vx += (-node.y / dist) * orbitSpeed;
+                    node.vy += (node.x / dist) * orbitSpeed;
+                    
+                    // Gentle breathing/wobble effect
+                    node.vx += Math.sin(time + i) * 0.05;
+                    node.vy += Math.cos(time + i) * 0.05;
+                }
+            });
         });
 
         setTimeout(() => {
