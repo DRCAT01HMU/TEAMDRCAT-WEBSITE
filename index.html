@@ -152,7 +152,7 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
-                let lines = [node.name];
+                let lines = node.name.split('\n');
                 if (node.group === 2 && node.name.length > 20) {
                     const words = node.name.split(' ');
                     const charsPerLine = Math.ceil(node.name.length / 3);

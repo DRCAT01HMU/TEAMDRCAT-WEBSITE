@@ -2,7 +2,7 @@ const graphData = {
   "nodes": [
   {
     "id": "TEAMDRCAT",
-    "name": "TEAMDRCAT WEBSITE",
+    "name": "TEAMDRCAT\nWEBSITE",
     "group": 0,
     "size": 80,
     "url": "",
