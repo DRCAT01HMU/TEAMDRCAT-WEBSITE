@@ -97,6 +97,36 @@ const graphData = {
     "group": 2,
     "size": 15,
     "url": "https://drcat01hmu.github.io/TEAMDRCAT-APP-SINH-LY/"
+  },
+  {
+    "id": "Dược Lý",
+    "name": "Dược Lý",
+    "group": 1,
+    "size": 40,
+    "url": "https://drcat01hmu.github.io/TEAMDRCAT-APP-DUOC-LY/",
+    "description": "Nắm vững cơ chế tác dụng, chỉ định và chống chỉ định của các nhóm thuốc lâm sàng."
+  },
+  {
+    "id": "desc_Dược Lý",
+    "name": "Nắm vững cơ chế tác dụng, chỉ định và chống chỉ định của các nhóm thuốc lâm sàng.",
+    "group": 2,
+    "size": 15,
+    "url": "https://drcat01hmu.github.io/TEAMDRCAT-APP-DUOC-LY/"
+  },
+  {
+    "id": "Hóa Sinh Lâm Sàng",
+    "name": "Hóa Sinh\nLâm Sàng",
+    "group": 1,
+    "size": 40,
+    "url": "https://drcat01hmu.github.io/TEAMDRCAT-APP-HOA-SINH-LAM-SANG/",
+    "description": "Phân tích các chỉ số xét nghiệm và ứng dụng hóa sinh trong chẩn đoán bệnh lý."
+  },
+  {
+    "id": "desc_Hóa Sinh Lâm Sàng",
+    "name": "Phân tích các chỉ số xét nghiệm và ứng dụng hóa sinh trong chẩn đoán bệnh lý.",
+    "group": 2,
+    "size": 15,
+    "url": "https://drcat01hmu.github.io/TEAMDRCAT-APP-HOA-SINH-LAM-SANG/"
   }
 ],
   "links": [
@@ -147,6 +177,22 @@ const graphData = {
   {
     "source": "Sinh Lý",
     "target": "desc_Sinh Lý"
+  },
+  {
+    "source": "TEAMDRCAT",
+    "target": "Dược Lý"
+  },
+  {
+    "source": "Dược Lý",
+    "target": "desc_Dược Lý"
+  },
+  {
+    "source": "TEAMDRCAT",
+    "target": "Hóa Sinh Lâm Sàng"
+  },
+  {
+    "source": "Hóa Sinh Lâm Sàng",
+    "target": "desc_Hóa Sinh Lâm Sàng"
   }
 ]
 };

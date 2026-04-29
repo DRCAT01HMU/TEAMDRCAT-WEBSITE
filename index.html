@@ -247,7 +247,7 @@
                 resetView();
                 return;
             }
-            const targetNode = graphData.nodes.find(n => n.name.toLowerCase().includes(val) && n.group === 1); // Chỉ search môn
+            const targetNode = graphData.nodes.find(n => n.id.toLowerCase().includes(val) && n.group === 1); // Chỉ search môn
             if(targetNode) {
                 const isMobile = window.innerWidth < 768;
                 Graph.centerAt(targetNode.x, targetNode.y, 1000);
@@ -271,16 +271,18 @@
         let currentUrl = "";
 
         function showPanel(node) {
-            pTitle.innerText = node.name;
+            pTitle.innerText = node.id;
             pDesc.innerText = node.description || "Mở giao diện học tập lâm sàng cho chuyên đề này.";
             currentUrl = node.url;
             
-            if(node.name === 'Nội Khoa') { pIcon.className = "fas fa-stethoscope"; }
-            else if(node.name === 'Ngoại Khoa') { pIcon.className = "fas fa-kit-medical"; }
-            else if(node.name === 'Sản Khoa') { pIcon.className = "fas fa-person-pregnant"; }
-            else if(node.name === 'Nhi Khoa') { pIcon.className = "fas fa-baby"; }
-            else if(node.name === 'Giải Phẫu') { pIcon.className = "fas fa-bone"; }
-            else if(node.name === 'Sinh Lý') { pIcon.className = "fas fa-heart-pulse"; }
+            if(node.id === 'Nội Khoa') { pIcon.className = "fas fa-stethoscope"; }
+            else if(node.id === 'Ngoại Khoa') { pIcon.className = "fas fa-kit-medical"; }
+            else if(node.id === 'Sản Khoa') { pIcon.className = "fas fa-person-pregnant"; }
+            else if(node.id === 'Nhi Khoa') { pIcon.className = "fas fa-baby"; }
+            else if(node.id === 'Giải Phẫu') { pIcon.className = "fas fa-bone"; }
+            else if(node.id === 'Sinh Lý') { pIcon.className = "fas fa-heart-pulse"; }
+            else if(node.id === 'Dược Lý') { pIcon.className = "fas fa-capsules"; }
+            else if(node.id === 'Hóa Sinh Lâm Sàng') { pIcon.className = "fas fa-flask"; }
             else { pIcon.className = "fas fa-book-medical"; }
 
             panel.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
